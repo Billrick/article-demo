@@ -1,17 +1,26 @@
 import logo from '@/assets/logo.png'
 import './index.scss'
 
-import { Card, Form, Input, Checkbox, Button } from 'antd'
+import { Card, Form, Input, Checkbox, Button, message } from 'antd'
 //图标
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useStore } from '@/store'
 
+import { useNavigate } from 'react-router-dom'
 
 
 function Login () {
   const { loginStore } = useStore()
-  const onFinish = (values) => {
-    loginStore.doLogin({ mobile: values.username, code: values.password })
+  const navigate = useNavigate()
+  const onFinish = async (values) => {
+    try {
+      await loginStore.doLogin({ mobile: values.username, code: values.password })
+      navigate('/', { replace: true })
+      message.success('登录成功！')
+    } catch (error) {
+      message.error(`登录失败 ${error.response.data.message}！`)
+    }
+
   }
   const onFinishFailed = (error) => {
     console.log(error)
